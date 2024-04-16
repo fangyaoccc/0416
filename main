@@ -1,0 +1,68 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+public class ColorChooserGUI extends JFrame {
+    private JComboBox<String> colorChooser;
+    private JLabel colorDisplay;
+    private CirclePanel circlePanel;
+
+    public ColorChooserGUI() {
+        setTitle("Color Chooser");
+        setSize(300, 300);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLayout(new BorderLayout());
+        String[] colors = {"Red", "Blue", "Green"};
+        colorChooser = new JComboBox<>(colors);
+        colorChooser.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String selectedColor = (String) colorChooser.getSelectedItem();
+                circlePanel.setColor(Color.decode(getColorHex(selectedColor)));
+                colorDisplay.setText("Pick a Color: " + selectedColor);
+            }
+        });
+        colorDisplay = new JLabel("Color: None", SwingConstants.CENTER);
+        circlePanel = new CirclePanel();
+
+        add(colorChooser, BorderLayout.NORTH);
+        add(circlePanel, BorderLayout.CENTER);
+        add(colorDisplay, BorderLayout.SOUTH);
+    }
+
+    private String getColorHex(String colorName) {
+        switch (colorName) {
+            case "Red":
+                return "#FF0000";
+            case "Blue":
+                return "#0000FF";
+            case "Green":
+                return "#008000";
+            default:
+                return "#FFFFFF";
+        }
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            new ColorChooserGUI().setVisible(true);
+        });
+    }
+
+    class CirclePanel extends JPanel {
+        private Color color = Color.WHITE;
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            g.setColor(color);
+            g.fillOval(50, 50, 100, 100);
+        }
+
+        public void setColor(Color color) {
+            this.color = color;
+            repaint();
+        }
+    }
+}
